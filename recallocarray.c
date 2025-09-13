@@ -5,6 +5,8 @@
 #include "configure.h"
 #include "recallocarray.h"
 
+#if ! HAVE_RECALLOCARRAY
+
 void *
 recallocarray(void *ptr, size_t oldnmemb, size_t nmemb, size_t size)
 {
@@ -29,3 +31,5 @@ recallocarray(void *ptr, size_t oldnmemb, size_t nmemb, size_t size)
     bzero(p + oldnmemb * size, (nmemb - oldnmemb) * size);
   return p;
 }
+
+#endif /* ! HAVE_RECALLOCARRAY */
