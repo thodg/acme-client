@@ -38,6 +38,7 @@ if ! which "$CC" >/dev/null; then
 fi
 
 CFLAGS="$CFLAGS -D_GNU_SOURCE"
+CFLAGS="$CFLAGS -D_OPENBSD_SOURCE"
 
 if pkg-config libbsd; then
     CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
