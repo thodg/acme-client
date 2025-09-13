@@ -1,4 +1,6 @@
 acme-client
+.configure.h
+configure.h
 .configure.mk
 configure.mk
 CVS/

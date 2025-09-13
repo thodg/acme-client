@@ -24,6 +24,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef __FreeBSD__
+# include <netinet/in.h>
+#endif
 
 #include "extern.h"
 

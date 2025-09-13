@@ -34,6 +34,7 @@
 
 #include "http.h"
 #include "extern.h"
+#include "recallocarray.h"
 
 /*
  * A buffer for transferring HTTP/S data.
@@ -92,18 +93,6 @@ dotlswrite(const void *buf, size_t sz, const struct http *http)
 		warnx("%s: tls_write: %s", http->src.ip,
 		    tls_error(http->ctx));
 	return rc;
-}
-
-// XXX insecure, should call explicit_bzero at free
-void * recallocarray (void *ptr, size_t oldnmemb, size_t nmemb, size_t size)
-{
-  char *p;
-  ssize_t delta;
-  ptr = reallocarray(ptr, nmemb, size);
-  p = ptr + oldnmemb * size;
-  if ((delta = nmemb - oldnmemb) > 0)
-    bzero(p, delta * size);
-  return ptr;
 }
 
 int

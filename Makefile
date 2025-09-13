@@ -15,6 +15,7 @@ SRCS =	acctproc.c \
 	main.c \
 	netproc.c \
 	parse.y \
+	recallocarray.c \
 	revokeproc.c \
 	key.c \
 	util.c
@@ -33,6 +34,7 @@ OBJS =	acctproc.o \
 	main.o \
 	netproc.o \
 	parse.o \
+	recallocarray.o \
 	revokeproc.o \
 	key.o \
 	util.o

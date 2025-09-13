@@ -17,6 +17,7 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 
+#include <sys/types.h>
 #include "parse.h"
 
 #define MAX_SERVERS_DNS 8

@@ -25,6 +25,7 @@
 
 #include "jsmn.h"
 #include "extern.h"
+#include "recallocarray.h"
 
 struct	jsmnp;
 

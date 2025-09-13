@@ -2,16 +2,30 @@
 
 echo "$PWD/configure"
 
+CONFIGURE_H=.configure.h
 CONFIGURE_MK=.configure.mk
+
+echo "/* gen by configure */
+#ifndef ACME_CLIENT_CONFIGURE_H
+#define ACME_CLIENT_CONFIGURE_H
+
+" > "${CONFIGURE_H}"
 
 echo "#!/bin/sh
 # gen by configure
-" > ${CONFIGURE_MK}
+" > "${CONFIGURE_MK}"
+
+update_configure_h() {
+    if ! cmp "${CONFIGURE_H}" configure.h; then
+	echo "-> $PWD/configure.h"
+	cp "${CONFIGURE_H}" configure.h
+    fi
+}
 
 update_configure_mk() {
-    if ! cmp ${CONFIGURE_MK} configure.mk; then
+    if ! cmp "${CONFIGURE_MK}" configure.mk; then
 	echo "-> $PWD/configure.mk"
-	cp ${CONFIGURE_MK} configure.mk
+	cp "${CONFIGURE_MK}" configure.mk
     fi
 }
 
@@ -24,9 +38,33 @@ if pkg-config libbsd; then
     LIBS="$LIBS -lresolv"
 fi
 
+if pkg-config libtls; then
+    CFLAGS="$CFLAGS $(pkg-config --cflags libtls)"
+    LIBS="$LIBS $(pkg-config --libs libtls)"
+fi
+
+OUT=".configure.recallocarray"
+OUT_C="${OUT}.c"
+echo "/* gen by configure */" > "${OUT_C}"
+echo "#include <stdlib.h>" >> "${OUT_C}"
+echo "int main () {" >> "${OUT_C}"
+echo "  char *p = recallocarray(NULL, 0, 16, 1);" >> "${OUT_C}"
+echo "  return 0;" >> "${OUT_C}"
+echo "}" >> "${OUT_C}"
+if ${CC} ${CFLAGS} "${OUT_C}" -o "${OUT}" 2>/dev/null; then
+    HAVE_RECALLOCARRAY=true
+    echo "#define HAVE_RECALLOCARRAY 1" >> "${CONFIGURE_H}"
+else
+    HAVE_RECALLOCARRAY=false
+    echo "#define HAVE_RECALLOCARRAY 0" >> "${CONFIGURE_H}"
+fi
+rm -f "${OUT}" "${OUT_C}"
+
+echo "#endif /* ACME_CLIENT_CONFIGURE_H */" >> "${CONFIGURE_H}"
+update_configure_h
+
 echo CFLAGS = "$CFLAGS" >> ${CONFIGURE_MK}
 echo LDFLAGS = "$LDFLAGS" >> ${CONFIGURE_MK}
 echo LIBS = "$LIBS" >> ${CONFIGURE_MK}
 echo prefix = "$prefix" >> ${CONFIGURE_MK}
-
 update_configure_mk

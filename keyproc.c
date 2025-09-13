@@ -31,6 +31,7 @@
 
 #include "extern.h"
 #include "key.h"
+#include "recallocarray.h"
 
 /*
  * This was lifted more or less directly from demos/x509/mkreq.c of the
