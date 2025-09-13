@@ -31,6 +31,12 @@ update_configure_mk() {
 
 : ${prefix:=/usr/local}
 
+: ${CC:=cc}
+
+if ! which "$CC" >/dev/null; then
+    echo "CC=$CC was not found in path"
+fi
+
 if pkg-config libbsd; then
     CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
     CFLAGS="$CFLAGS -DLIBBSD_OPENBSD_VIS"
@@ -51,7 +57,7 @@ echo "int main () {" >> "${OUT_C}"
 echo "  char *p = recallocarray(NULL, 0, 16, 1);" >> "${OUT_C}"
 echo "  return 0;" >> "${OUT_C}"
 echo "}" >> "${OUT_C}"
-if ${CC} ${CFLAGS} "${OUT_C}" -o "${OUT}" 2>/dev/null; then
+if ${CC} ${CFLAGS} "${OUT_C}" -o "${OUT}" ${LIBS} 2>/dev/null; then
     HAVE_RECALLOCARRAY=true
     echo "#define HAVE_RECALLOCARRAY 1" >> "${CONFIGURE_H}"
 else
