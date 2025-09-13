@@ -15,6 +15,8 @@ update_configure_mk() {
     fi
 }
 
+: ${prefix:=/usr/local}
+
 if pkg-config libbsd; then
     CFLAGS="$CFLAGS $(pkg-config --cflags libbsd-overlay)"
     CFLAGS="$CFLAGS -DLIBBSD_OPENBSD_VIS"
@@ -25,5 +27,6 @@ fi
 echo CFLAGS = "$CFLAGS" >> ${CONFIGURE_MK}
 echo LDFLAGS = "$LDFLAGS" >> ${CONFIGURE_MK}
 echo LIBS = "$LIBS" >> ${CONFIGURE_MK}
+echo prefix = "$prefix" >> ${CONFIGURE_MK}
 
 update_configure_mk
