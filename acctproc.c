@@ -77,7 +77,7 @@ static char *
 op_thumb_rsa(EVP_PKEY *pkey)
 {
 	char	*exp = NULL, *mod = NULL, *json = NULL;
-	RSA	*r;
+	const RSA	*r;
 
 	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
 		warnx("EVP_PKEY_get0_RSA");
@@ -101,7 +101,7 @@ static char *
 op_thumb_ec(EVP_PKEY *pkey)
 {
 	BIGNUM	*X = NULL, *Y = NULL;
-	EC_KEY	*ec = NULL;
+	const EC_KEY	*ec = NULL;
 	char	*x = NULL, *y = NULL;
 	char	*json = NULL;
 
@@ -186,7 +186,7 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
 {
 	char	*exp = NULL, *mod = NULL;
 	int	rc = 0;
-	RSA	*r;
+	const RSA	*r;
 
 	*prot = NULL;
 
@@ -215,7 +215,7 @@ static int
 op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
 {
 	BIGNUM	*X = NULL, *Y = NULL;
-	EC_KEY	*ec = NULL;
+	const EC_KEY	*ec = NULL;
 	char	*x = NULL, *y = NULL;
 	int	rc = 0;
 
@@ -348,7 +348,8 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
 		warnx("EVP_DigestSignInit");
 		goto out;
 	}
-	if (!EVP_DigestSign(ctx, NULL, &digsz, sign, sign_len)) {
+	if (!EVP_DigestSign(ctx, NULL, &digsz, (unsigned char *) sign,
+			    sign_len)) {
 		warnx("EVP_DigestSign");
 		goto out;
 	}
@@ -356,7 +357,8 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
 		warn("malloc");
 		goto out;
 	}
-	if (!EVP_DigestSign(ctx, dig, &digsz, sign, sign_len)) {
+	if (!EVP_DigestSign(ctx, dig, &digsz, (unsigned char *) sign,
+			    sign_len)) {
 		warnx("EVP_DigestSign");
 		goto out;
 	}
@@ -475,12 +477,12 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
 	/* File-system, user, and sandbox jailing. */
 
 	ERR_load_crypto_strings();
-
+#if defined(__OpenBSD__)
 	if (pledge("stdio", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	if (newacct) {
 		switch (keytype) {
 		case KT_ECDSA:

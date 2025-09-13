@@ -361,11 +361,12 @@ main(int argc, char *argv[])
 
 	close(rvk_fds[0]);
 
+#if defined(__OpenBSD__)
 	/* Jail: sandbox, file-system, user. */
 
 	if (pledge("stdio", NULL) == -1)
 		err(EXIT_FAILURE, "pledge");
-
+#endif
 	/*
 	 * Collect our subprocesses.
 	 * Require that they both have exited cleanly.

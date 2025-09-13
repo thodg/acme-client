@@ -40,12 +40,12 @@ certproc(int netsock, int filesock)
 	int		 rc = 0, cc;
 	enum certop	 op;
 	long		 lval;
-
+#if defined(__OpenBSD__)
 	if (pledge("stdio", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	/* Read what the netproc wants us to do. */
 
 	op = CERT__MAX;

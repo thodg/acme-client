@@ -111,11 +111,12 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
 
 	ERR_load_crypto_strings();
 
+#if defined(__OpenBSD__)
 	if (pledge("stdio", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	if (newkey) {
 		switch (keytype) {
 		case KT_ECDSA:

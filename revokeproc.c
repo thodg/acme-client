@@ -88,11 +88,12 @@ revokeproc(int fd, const char *certfile, int force,
 
 	ERR_load_crypto_strings();
 
+#if defined(__OpenBSD__)
 	if (pledge("stdio", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	/*
 	 * If we couldn't open the certificate, it doesn't exist so we
 	 * haven't submitted it yet, so obviously we can mark that it
@@ -185,7 +186,8 @@ revokeproc(int fd, const char *certfile, int force,
 					warn("%s: unexpected SAN", certfile);
 					goto out;
 				}
-				strvisx(visbuf, name_buf, name_len, VIS_SAFE);
+				strvisx(visbuf, (const char *)name_buf,
+					name_len, VIS_SAFE);
 				warnx("%s: unexpected SAN entry: %s",
 				    certfile, visbuf);
 				free(visbuf);

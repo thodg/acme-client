@@ -1,3 +1,5 @@
 acme-client
+.configure.mk
+configure.mk
 CVS/
 *.d

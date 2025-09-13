@@ -99,6 +99,7 @@ fileproc(int certsock, const char *certdir, const char *certfile, const char
 	long		 lval;
 	enum fileop	 op;
 
+#if defined(__OpenBSD__)
 	if (unveil(certdir, "rwc") == -1) {
 		warn("unveil %s", certdir);
 		goto out;
@@ -112,7 +113,9 @@ fileproc(int certsock, const char *certdir, const char *certfile, const char
 		warn("pledge");
 		goto out;
 	}
-
+#else
+	(void)certdir;
+#endif
 	/* Read our operation. */
 
 	op = FILE__MAX;

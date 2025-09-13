@@ -737,6 +737,7 @@ netproc(int kfd, int afd, int Cfd, int cfd, int dfd, int rfd,
 	memset(&paths, 0, sizeof(struct capaths));
 	memset(&c, 0, sizeof(struct conn));
 
+#if defined(__OpenBSD__)
 	if (unveil(tls_default_ca_cert_file(), "r") == -1) {
 		warn("unveil %s", tls_default_ca_cert_file());
 		goto out;
@@ -746,17 +747,18 @@ netproc(int kfd, int afd, int Cfd, int cfd, int dfd, int rfd,
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	if (http_init(authority->insecure) == -1) {
 		warn("http_init");
 		goto out;
 	}
 
+#if defined(__OpenBSD__)
 	if (pledge("stdio inet", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	/*
 	 * Wait until the acctproc, keyproc, and revokeproc have started up and
 	 * are ready to serve us data.

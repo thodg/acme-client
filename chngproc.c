@@ -37,7 +37,7 @@ chngproc(int netsock, const char *root)
 	enum chngop	  op;
 	void		 *pp;
 
-
+#if defined(__OpenBSD__)
 	if (unveil(root, "wc") == -1) {
 		warn("unveil %s", root);
 		goto out;
@@ -47,7 +47,7 @@ chngproc(int netsock, const char *root)
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	/*
 	 * Loop while we wait to get a thumbprint and token.
 	 * We'll get this for each SAN request.

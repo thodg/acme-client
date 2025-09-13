@@ -94,6 +94,18 @@ dotlswrite(const void *buf, size_t sz, const struct http *http)
 	return rc;
 }
 
+// XXX insecure, should call explicit_bzero at free
+void * recallocarray (void *ptr, size_t oldnmemb, size_t nmemb, size_t size)
+{
+  char *p;
+  ssize_t delta;
+  ptr = reallocarray(ptr, nmemb, size);
+  p = ptr + oldnmemb * size;
+  if ((delta = nmemb - oldnmemb) > 0)
+    bzero(p, delta * size);
+  return ptr;
+}
+
 int
 http_init(int insecure)
 {

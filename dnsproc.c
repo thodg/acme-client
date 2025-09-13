@@ -67,7 +67,7 @@ host_dns(const char *s, struct addr *vec)
 
 	if (error == EAI_AGAIN ||
 		/* FIXME */
-#ifndef __FreeBSD__
+#if defined(EAI_NODATA)
 	    error == EAI_NODATA ||
 #endif
 	    error == EAI_NONAME)
@@ -119,11 +119,12 @@ dnsproc(int nfd)
 	size_t		 i;
 	enum dnsop	 op;
 
+#if defined(__OpenBSD__)
 	if (pledge("stdio dns", NULL) == -1) {
 		warn("pledge");
 		goto out;
 	}
-
+#endif
 	/*
 	 * This is simple: just loop on a request operation, and each
 	 * time we write back zero or more entries.

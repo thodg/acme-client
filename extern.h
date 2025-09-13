@@ -250,7 +250,7 @@ char		*base64buf_url(const char *, size_t);
  */
 struct jsmnn	*json_parse(const char *, size_t);
 void		 json_free(struct jsmnn *);
-int		 json_parse_response(struct jsmnn *);
+enum chngstatus	 json_parse_response(struct jsmnn *);
 void		 json_free_challenge(struct chng *);
 int		 json_parse_challenge(struct jsmnn *, struct chng *);
 void		 json_free_order(struct order *);
